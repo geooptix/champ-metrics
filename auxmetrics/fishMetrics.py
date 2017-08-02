@@ -1,5 +1,7 @@
 import logging
 
+__version__ = '0.1.0'
+
 maxSizeToBeConsideredJuvinile = 250
 
 otherSpecies = [
@@ -52,6 +54,7 @@ def visitFishCountMetricsForSpecies(visitMetrics, snorkelFish, snorkelFishBinned
 
 def visitFishCountMetrics(visitid, visitMetrics, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned):
     visitMetrics["VisitID"] = visitid
+    visitMetrics["EngineVersion"] = __version__
     visitFishCountMetricsForSpecies(visitMetrics, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, "Chinook", "CountOfChinook")
     visitFishCountMetricsForSpecies(visitMetrics, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, "Coho", "CountOfCoho")
     visitFishCountMetricsForSpecies(visitMetrics, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, "Sockeye", "CountOfSockeye")
@@ -102,6 +105,7 @@ def channelUnitFishCountMetrics(visitid, channelUnitMetrics, channelUnits, snork
         cu = dict()
         cu["ChannelUnitID"] = c["value"]["ChannelUnitID"]
         cu["VisitID"] = visitid
+        cu["EngineVersion"] = __version__
         channelUnitMetrics.append(cu)
 
     channelUnitFishCountMetricsForSpecies(channelUnitMetrics, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, "Chinook", "CountOfChinook")
@@ -160,6 +164,7 @@ def tier1FishCountMetrics(visitid, tier1Metrics, channelUnits, snorkelFish, snor
         t = dict()
         t["Tier1"] = c
         t["VisitID"] = visitid
+        t["EngineVersion"] = __version__
         tier1Metrics.append(t)
 
     tier1FishCountMetricsForSpecies(tier1Metrics, channelUnits, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, "Chinook", "CountOfChinook")
@@ -178,51 +183,3 @@ def structureFishCountMetrics():
     pass
 
 
-"""
-def main():
-    # parse command line options
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument('toplevelfolder', help='Top level folder containing Harold results', type=str)
-    parser.add_argument('channelUnitsJSON', help='Path to channel units JSON file', type=argparse.FileType('r'))
-    parser.add_argument('xmlFile', help='Path to output metric XML file', type=str)
-    parser.add_argument('logFile', help='Path to output log file', type=str)
-    parser.add_argument('visitID', help='Visit ID', type=int)
-    parser.add_argument('--verbose', help='Get more information in your logs.', action='store_true', default=False )
-    args = parser.parse_args()
-
-    # Verify command line arguments
-    if not args.toplevelfolder or not args.channelUnitsJSON or not args.xmlFile or not args.visitID:
-        print "ERROR: Missing arguments"
-        parser.print_help()
-        exit(1)
-    if not sys.path.isdir(args.toplevelfolder):
-        print "ERROR: '{}' is not a folder".format(args.toplevelfolder)
-        parser.print_help()
-        exit(1)
-
-    # Initiate the log file
-    logg = Logger("Program")
-    logg.setup(logPath=args.logFile, verbose=args.verbose)
-
-    try:
-        #dMetricsObj = visitTopoMetrics(args.toplevelfolder, args.visitID, args.xmlFile, args.channelUnitsJSON.name)
-        pass
-    #except DataException as e:
-    #    # Exception class prints the relevant information
-    #    sys.exit(2)
-    except AssertionError as e:
-        logg.error(e.message)
-        traceback.print_exc(file=sys.stdout)
-        sys.exit(1)
-    except Exception as e:
-        logg.error(e.message)
-        traceback.print_exc(file=sys.stdout)
-        sys.exit(1)
-
-    sys.exit(0)
-
-
-if __name__ == "__main__":
-    main()
-"""
