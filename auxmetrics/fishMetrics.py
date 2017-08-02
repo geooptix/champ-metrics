@@ -42,8 +42,11 @@ def visitFishCountMetricsForSpecies(visitMetrics, snorkelFish, snorkelFishBinned
         snorkelFishSteelheadBinnedJuvinileCount = sum([int(s["value"]["FishCountLT50mm"]) + int(s["value"]["FishCount50to79mm"]) + int(s["value"]["FishCount80to129mm"]) + int(s["value"]["FishCount130to199mm"]) + int(s["value"]["FishCount200to249mm"]) for s in snorkelFishSteelheadBinnedForSpecies ])
 
     count = snorkelFishJuvinileCount + snorkelFishBinnedJuvinileCount + snorkelFishSteelheadBinnedJuvinileCount
-    print "{0}: {1}".format(metricName, count)
-    logging.info("{0}: {1}".format(metricName, count))
+
+    logOutput = "Visit {2}: {0}: {1}".format(metricName, count, visitMetrics["VisitID"])
+    print logOutput
+    logging.info(logOutput)
+
     visitMetrics[metricName] = count
 
 
@@ -85,8 +88,11 @@ def channelUnitFishCountMetricsForSpecies(channelUnitMetrics, snorkelFish, snork
             snorkelFishSteelheadBinnedJuvinileCount = sum([int(s["value"]["FishCountLT50mm"]) + int(s["value"]["FishCount50to79mm"]) + int(s["value"]["FishCount80to129mm"]) + int(s["value"]["FishCount130to199mm"]) + int(s["value"]["FishCount200to249mm"]) for s in snorkelFishSteelheadBinnedForSpecies])
 
         count = snorkelFishJuvinileCount + snorkelFishBinnedJuvinileCount + snorkelFishSteelheadBinnedJuvinileCount
-        print "ChannelUnit {0} {1}: {2}".format(channelUnitID, metricName, count)
-        logging.info( "ChannelUnit {0} {1}: {2}".format(channelUnitID, metricName, count))
+
+        logOutput = "Visit {3}: ChannelUnit {0} {1}: {2}".format(channelUnitID, metricName, count, c["VisitID"])
+        print logOutput
+        logging.info(logOutput)
+
         c[metricName] = count
 
 
@@ -97,7 +103,6 @@ def channelUnitFishCountMetrics(visitid, channelUnitMetrics, channelUnits, snork
         cu["ChannelUnitID"] = c["value"]["ChannelUnitID"]
         cu["VisitID"] = visitid
         channelUnitMetrics.append(cu)
-
 
     channelUnitFishCountMetricsForSpecies(channelUnitMetrics, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, "Chinook", "CountOfChinook")
     channelUnitFishCountMetricsForSpecies(channelUnitMetrics, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, "Coho", "CountOfCoho")
@@ -138,8 +143,11 @@ def tier1FishCountMetricsForSpecies(tier1Metrics, channelUnits, snorkelFish, sno
             snorkelFishSteelheadBinnedJuvinileCount = sum([int(s["value"]["FishCountLT50mm"]) + int(s["value"]["FishCount50to79mm"]) + int(s["value"]["FishCount80to129mm"]) + int(s["value"]["FishCount130to199mm"]) + int(s["value"]["FishCount200to249mm"]) for s in snorkelFishSteelheadBinnedForSpecies])
 
         count = snorkelFishJuvinileCount + snorkelFishBinnedJuvinileCount + snorkelFishSteelheadBinnedJuvinileCount
-        print "{0} {1}: {2}".format(tier1, metricName, count)
-        logging.info("{0} {1}: {2}".format(tier1, metricName, count))
+
+        visitLogOutput = "Visit {3}: {0} {1}: {2}".format(tier1, metricName, count, t["VisitID"])
+        print visitLogOutput
+        logging.info(visitLogOutput)
+
         t[metricName] = count
 
 

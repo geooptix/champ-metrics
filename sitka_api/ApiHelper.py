@@ -101,6 +101,10 @@ class ApiHelper:
         print "Getting visit data"
         url = "{0}/visits/{1}".format(self.base_url, visitID)
         response = requests.get(url, headers={"Authorization": self.token}, verify=self.shouldVerify())
+
+        if response.status_code != 200:
+            return None
+
         respObj = json.loads(response.content)
 
         return respObj
@@ -135,7 +139,7 @@ class ApiHelper:
         :param measurementName:
         :return:
         """
-        print "Getting visit measurements for " + measurementName
+        print "Getting visit measurements for visit " + str(visitID) + " of type " + measurementName
         url = "{0}/visits/{1}/measurements/{2}".format(self.base_url, visitID, measurementName)
         response = requests.get(url, headers={"Authorization": self.token}, verify=self.shouldVerify())
 
