@@ -2,10 +2,8 @@
 import argparse
 import json
 import ConfigParser
-
-import time
-
 import datetime
+
 from azure.storage.blob import BlockBlobService
 
 from auxmetrics.fishMetrics import *
@@ -65,8 +63,7 @@ def main():
     apiHelper = ApiHelper.ApiHelper(baseApiUrl, tokenizer.TOKEN)
 
     # Azure blob setup
-    timestamp = time.time()
-    datestring = datetime.datetime.fromtimestamp(timestamp).strftime('%Y%m%d%H%M%S')
+    datestring = datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S')
 
     container_name = 'geooptix-container-' + datestring
 

@@ -1,4 +1,5 @@
 import logging
+import datetime
 
 __version__ = '0.1.0'
 
@@ -55,6 +56,7 @@ def visitFishCountMetricsForSpecies(visitMetrics, snorkelFish, snorkelFishBinned
 def visitFishCountMetrics(visitid, visitMetrics, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned):
     visitMetrics["VisitID"] = visitid
     visitMetrics["EngineVersion"] = __version__
+    visitMetrics["CalcDate"] = datetime.datetime.utcnow().isoformat() + 'Z'
     visitFishCountMetricsForSpecies(visitMetrics, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, "Chinook", "CountOfChinook")
     visitFishCountMetricsForSpecies(visitMetrics, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, "Coho", "CountOfCoho")
     visitFishCountMetricsForSpecies(visitMetrics, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, "Sockeye", "CountOfSockeye")
@@ -106,6 +108,7 @@ def channelUnitFishCountMetrics(visitid, channelUnitMetrics, channelUnits, snork
         cu["ChannelUnitID"] = c["value"]["ChannelUnitID"]
         cu["VisitID"] = visitid
         cu["EngineVersion"] = __version__
+        cu["CalcDate"] = datetime.datetime.utcnow().isoformat() + 'Z'
         channelUnitMetrics.append(cu)
 
     channelUnitFishCountMetricsForSpecies(channelUnitMetrics, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, "Chinook", "CountOfChinook")
@@ -165,6 +168,7 @@ def tier1FishCountMetrics(visitid, tier1Metrics, channelUnits, snorkelFish, snor
         t["Tier1"] = c
         t["VisitID"] = visitid
         t["EngineVersion"] = __version__
+        t["CalcDate"] = datetime.datetime.utcnow().isoformat() + 'Z'
         tier1Metrics.append(t)
 
     tier1FishCountMetricsForSpecies(tier1Metrics, channelUnits, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, "Chinook", "CountOfChinook")
