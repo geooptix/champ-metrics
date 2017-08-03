@@ -103,5 +103,5 @@ ENV/
 
 config.ini
 output.log
-data/
+output/
 .idea/

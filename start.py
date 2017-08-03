@@ -1,4 +1,5 @@
 
+import os
 import argparse
 import json
 import ConfigParser
@@ -38,7 +39,7 @@ def main():
         parser.print_help()
         exit(1)
 
-    #Config setup
+    # Config setup
     Config = ConfigParser.ConfigParser()
     Config.read("config.ini")
 
@@ -56,18 +57,24 @@ def main():
     azureAccount = azureSection["account"]
     azureKey = azureSection["key"]
 
+    outputDirectory = 'output'
+
+    # create a subdirectory to store the metrics in
+    if not os.path.exists(outputDirectory):
+        os.makedirs(outputDirectory)
+
     logging.basicConfig(filename=args.logFile, level=logging.INFO, filemode='w')
 
-    #Api setup
+    # Api setup
     tokenizer = Tokenator.Tokenator(tokenUrl,clientID,clientSecret,username,password)
     apiHelper = ApiHelper.ApiHelper(baseApiUrl, tokenizer.TOKEN)
 
     # Azure blob setup
     datestring = datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S')
-
     container_name = 'geooptix-container-' + datestring
 
     block_blob_service = BlockBlobService(account_name=azureAccount, account_key=azureKey)
+
     # The same containers can hold all types of blobs
     block_blob_service.create_container(container_name)
 
@@ -93,6 +100,7 @@ def processVisit(apiHelper, block_blob_service, container_name, visit, visit_id)
     snorkelFish = apiHelper.getVisitMeasurements(visit_id, "Snorkel Fish")
     snorkelFishBinned = apiHelper.getVisitMeasurements(visit_id, "Snorkel Fish Count Binned")
     snorkelFishSteelheadBinned = apiHelper.getVisitMeasurements(visit_id, "Snorkel Fish Count Steelhead Binned")
+
     # print "Writing Visit data to file"
     # visit_file = 'data/visit_{}.json'.format(visit_id)
     # with open(visit_file, 'w') as outfile:
@@ -105,7 +113,7 @@ def processVisit(apiHelper, block_blob_service, container_name, visit, visit_id)
     infoLog("Calculate Fish Count Metrics for Visit {0}".format(visit_id))
     visitFishCountMetrics(visit_id, visitMetrics, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned)
     # print json.dumps(visitMetrics, indent=4, sort_keys=True)
-    visitJsonFilePath = "data/visit_{0}_fishCounts.json".format(visit_id)
+    visitJsonFilePath = "{0}/visit_{1}_fishCounts.json".format(outputDirectory, visit_id)
     with open(visitJsonFilePath, 'w') as outfile:
         json.dump(visitMetrics, outfile, sort_keys=True, indent=4, ensure_ascii=False)
 
@@ -115,7 +123,7 @@ def processVisit(apiHelper, block_blob_service, container_name, visit, visit_id)
     channelUnitFishCountMetrics(visit_id, channelUnitMetrics, channelUnits, snorkelFish, snorkelFishBinned,
                                 snorkelFishSteelheadBinned)
     # print json.dumps(channelUnitMetrics, indent=4, sort_keys=True)
-    channelUnitJsonFilePath = "data/visit_{0}_channelUnitFishCounts.json".format(visit_id)
+    channelUnitJsonFilePath = "{0}/visit_{1}_channelUnitFishCounts.json".format(outputDirectory, visit_id)
     with open(channelUnitJsonFilePath, 'w') as outfile:
         json.dump(channelUnitMetrics, outfile, sort_keys=True, indent=4, ensure_ascii=False)
 
@@ -124,7 +132,7 @@ def processVisit(apiHelper, block_blob_service, container_name, visit, visit_id)
     tier1FishCountMetrics(visit_id, tier1Metrics, channelUnits, snorkelFish, snorkelFishBinned,
                           snorkelFishSteelheadBinned)
     # print json.dumps(tier1Metrics, indent=4, sort_keys=True)
-    tier1JsonFilePath = "data/visit_{0}_tier1FishCounts.json".format(visit_id)
+    tier1JsonFilePath = "{0}/visit_{1}_tier1FishCounts.json".format(outputDirectory, visit_id)
     with open(tier1JsonFilePath, 'w') as outfile:
         json.dump(tier1Metrics, outfile, sort_keys=True, indent=4, ensure_ascii=False)
 

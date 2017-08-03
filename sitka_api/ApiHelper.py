@@ -1,5 +1,5 @@
+import os
 import json
-
 import requests
 
 
@@ -15,7 +15,6 @@ class ApiHelper:
         self.base_url = url
         self.token = token
 
-
     def getVisits(self):
         """
         Get all the instances we need to delete
@@ -25,7 +24,7 @@ class ApiHelper:
 
         print "Getting visit data"
         url = "{0}/visits".format(self.base_url)
-        response = requests.get(url, headers={"Authorization": self.token})
+        response = requests.get(url, headers={"Authorization": self.token}, verify=self.verification())
         respObj = json.loads(response.content)
 
         visits = {}
@@ -46,7 +45,7 @@ class ApiHelper:
         while retry and retries < 10:
             try:
                 retries += 1
-                response = requests.get(url, headers={"Authorization": self.token}, verify=self.shouldVerify())
+                response = requests.get(url, headers={"Authorization": self.token}, verify=self.verification())
                 retry = False
             except Exception, e:
                 print "ERROR: Problem with API Call: {}. retrying... {}".format(url, retries)
@@ -57,7 +56,7 @@ class ApiHelper:
     def getMetricSchema(self):
         print "Getting Metric Schemas"
         url = "{0}/metricschemas".format(self.base_url)
-        response = requests.get(url, headers={"Authorization": self.token}, verify=self.shouldVerify())
+        response = requests.get(url, headers={"Authorization": self.token}, verify=self.verification())
         respObj = json.loads(response.content)
 
         return respObj
@@ -65,7 +64,7 @@ class ApiHelper:
     def getSites(self):
         print "Getting sites"
         url = "{0}/sites".format(self.base_url)
-        response = requests.get(url, headers={"Authorization": self.token}, verify=self.shouldVerify())
+        response = requests.get(url, headers={"Authorization": self.token}, verify=self.verification())
         respObj = json.loads(response.content)
 
         return respObj
@@ -73,12 +72,12 @@ class ApiHelper:
     def getWatersheds(self):
         print "Getting watersheds"
         url = "{0}/watersheds".format(self.base_url)
-        response = requests.get(url, headers={"Authorization": self.token}, verify=self.shouldVerify())
+        response = requests.get(url, headers={"Authorization": self.token}, verify=self.verification())
         respObj = json.loads(response.content)
 
         watersheds = {}
         for obj in respObj:
-            response = requests.get(obj['url'], headers={"Authorization": self.token}, verify=self.shouldVerify())
+            response = requests.get(obj['url'], headers={"Authorization": self.token}, verify=self.verification())
             respObj = json.loads(response.content)
             watersheds[obj['name']] = [site['name'] for site in respObj['sites']]
             print "     Getting sites for watershed: {}".format(obj['name'])
@@ -87,7 +86,7 @@ class ApiHelper:
 
     def downloadFile(self, url, localpath):
         print "Getting visit file data"
-        response = requests.get(url, headers={"Authorization": self.token}, verify=self.shouldVerify())
+        response = requests.get(url, headers={"Authorization": self.token}, verify=self.verification())
         with open(localpath, 'wb') as f:
             f.write(response.content)
             print "Downloaded file: {} to: {}".format(url, localpath)
@@ -100,7 +99,7 @@ class ApiHelper:
         """
         print "Getting visit data"
         url = "{0}/visits/{1}".format(self.base_url, visitID)
-        response = requests.get(url, headers={"Authorization": self.token}, verify=self.shouldVerify())
+        response = requests.get(url, headers={"Authorization": self.token}, verify=self.verification())
 
         if response.status_code != 200:
             return None
@@ -118,14 +117,14 @@ class ApiHelper:
         """
         print "Getting visit file data"
         url = "{0}/visits/{1}/fieldFolders".format(self.base_url, visitID)
-        response = requests.get(url, headers={"Authorization": self.token}, verify=self.shouldVerify())
+        response = requests.get(url, headers={"Authorization": self.token}, verify=self.verification())
         respObj = json.loads(response.content)
 
         files = {}
         counter = 0
         for folder in respObj:
             url = "{0}/visits/{1}/fieldFolders/{2}".format(self.base_url, visitID, folder['name'])
-            response = requests.get(url, headers={"Authorization": self.token}, verify=self.shouldVerify())
+            response = requests.get(url, headers={"Authorization": self.token}, verify=self.verification())
             respObj = json.loads(response.content)
             files[folder['name']] = respObj
             counter += len(respObj)
@@ -141,7 +140,7 @@ class ApiHelper:
         """
         print "Getting visit measurements for visit " + str(visitID) + " of type " + measurementName
         url = "{0}/visits/{1}/measurements/{2}".format(self.base_url, visitID, measurementName)
-        response = requests.get(url, headers={"Authorization": self.token}, verify=self.shouldVerify())
+        response = requests.get(url, headers={"Authorization": self.token}, verify=self.verification())
 
         if response.status_code != 200:
             return None
@@ -158,7 +157,7 @@ class ApiHelper:
         """
         print "Getting instances"
         url = "{0}/visit/metricschemas/{1}".format(self.base_url, schemaName)
-        response = requests.get(url, headers={"Authorization": self.token}, verify=self.shouldVerify())
+        response = requests.get(url, headers={"Authorization": self.token}, verify=self.verification())
         respObj = json.loads(response.content)
         print "  -- Found {} instances for the schema {}".format(len(respObj['instances']), schemaName)
         return [inst['url'] for inst in respObj['instances']]
@@ -184,7 +183,7 @@ class ApiHelper:
 
         try:
             for url in instances:
-                response = requests.delete(url, headers={"Authorization": self.token}, verify=self.shouldVerify())
+                response = requests.delete(url, headers={"Authorization": self.token}, verify=self.verification())
                 respObj = json.loads(response.content)
                 if response.status_code != 200:
                     raise "FAILED with code: {} and error: '{}'".format(response.status_code, response.text)
@@ -209,7 +208,7 @@ class ApiHelper:
             success = self.deleteInstances(instances)
 
             url = "{0}/visit/metricschemas/{1}".format(self.base_url, schemaName)
-            response = requests.delete(url, headers={"Authorization": self.token}, verify=self.shouldVerify())
+            response = requests.delete(url, headers={"Authorization": self.token}, verify=self.verification())
             respObj = json.loads(response.content)
             print "Schema Deleted"
             return [inst['url'] for inst in respObj['instances']]
@@ -217,8 +216,13 @@ class ApiHelper:
         except Exception, e:
             print "whoops"
 
-        print "boop"
-        
-    
-    def shouldVerify(self):
-        return False #'localhost' not in self.base_url
+
+    def verification(self):
+        # if we have a ca bundle in the current directory, use that as the certificate verification method,
+        # otherwise don't do verification.  get your own by curling https://curl.haxx.se/ca/cacert.pem
+        certFile = './cacert.pem'
+
+        if not os.path.exists(certFile):
+            return False
+
+        return certFile
