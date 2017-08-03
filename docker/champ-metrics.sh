@@ -2,17 +2,13 @@
 
 echo 'Starting champ-metrics calculation process'
 
-# establish the working directory for this container
-mkdir -p /sitka
-cd /sitka
-
-# initialize a local repo and clone the aux metrics projcect
+# initialize a local repo and clone the aux metrics source code
 git init
 git clone https://github.com/geooptix/champ-metrics.git
 
-# copy the config file that was injected at build time
-cd ./champ-metrics
-cp /config.ini .
+# new working directory needs to be where the source from git resides
+mv config.ini ./champ-metrics
+cd champ-metrics
 
-# fire up python and bootstrap the calculation modules
+# fire up python and bootstrap the calculation process
 python start.py .\output\champ-metrics.log 3218

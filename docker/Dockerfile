@@ -5,7 +5,7 @@
 # start with an ubuntu base image
 FROM ubuntu:16.04
 
-MAINTAINER Keith Steele
+MAINTAINER Keith Steele (keith@sitkatech.com)
 
 # ensure that all the base patches are applied
 RUN apt-get update -y
@@ -23,10 +23,16 @@ RUN pip install --upgrade virtualenv
 # todo: create a virtualenv and install azure-storage into this environment
 RUN pip install azure-storage
 
+# create working directory
+RUN mkdir -p /usr/src/sitka
+WORKDIR /usr/src/sitka
+
 # inject the standard configuration file and the startup script
-COPY ./config.ini /
-COPY ./champ-metrics.sh /
+COPY ./config.ini .
+COPY ./champ-metrics.sh .
 
 # clean up line endings to keep everyone happy
 RUN dos2unix ./champ-metrics.sh
 RUN dos2unix ./config.ini
+
+CMD ./champ-metrics.sh
