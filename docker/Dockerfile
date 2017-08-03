@@ -26,9 +26,7 @@ RUN pip install azure-storage
 # inject the standard configuration file and the startup script
 COPY ./config.ini /
 COPY ./champ-metrics.sh /
-COPY ./cacert.pem /
 
 # clean up line endings to keep everyone happy
 RUN dos2unix ./champ-metrics.sh
 RUN dos2unix ./config.ini
-RUN dos2unix ./cacert.pem

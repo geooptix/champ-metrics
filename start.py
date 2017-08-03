@@ -86,12 +86,12 @@ def main():
             print "Visit was not found for id: {0}".format(visit_id)
             continue
 
-        processVisit(apiHelper, block_blob_service, container_name, visit, visit_id)
+        processVisit(apiHelper, block_blob_service, container_name, visit, visit_id, outputDirectory)
 
     block_blob_service.create_blob_from_path(container_name, args.logFile, args.logFile)
 
 
-def processVisit(apiHelper, block_blob_service, container_name, visit, visit_id):
+def processVisit(apiHelper, block_blob_service, container_name, visit, visit_id, outputDirectory):
     protocol = visit["protocol"]
     iteration = str(visit["iterationID"] + 2010)
 
