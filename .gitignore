@@ -105,3 +105,12 @@ config.ini
 output.log
 output/
 .idea/
+/Channel Unit.json
+/Jam Has Channel Unit.json
+/Large Woody Debris.json
+/Large Woody Piece.json
+/Snorkel Fish Count Binned.json
+/Snorkel Fish Count Steelhead Binned.json
+/Snorkel Fish.json
+/Visit.json
+/Woody Debris Jam.json
