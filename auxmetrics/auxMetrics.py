@@ -4,16 +4,17 @@ from auxmetrics.metricUtil import populateDefaultColumns
 
 from auxmetrics.fishMetrics import *
 from auxmetrics.woodMetrics import *
+from auxmetrics.coverMetrics import *
 
 
-def calculateMetricsForVisit(visitid, visit, channelUnits, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, largeWoodyPieces, largeWoodyDebris, woodyDebrisJams, jamHasChannelUnits):
+def calculateMetricsForVisit(visitid, visit, channelUnits, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, largeWoodyPieces, largeWoodyDebris, woodyDebrisJams, jamHasChannelUnits, riparianStructures):
 
     visitMetrics = dict()
     populateDefaultColumns(visitMetrics, visitid)
 
     visitFishCountMetrics(visitMetrics, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned)
     visitLWDMetrics(visitMetrics, visit, channelUnits, largeWoodyPieces, largeWoodyDebris, woodyDebrisJams, jamHasChannelUnits)
-
+    visitCoverMetrics(visitMetrics, visit, riparianStructures)
     return visitMetrics
 
 def calculateMetricsForChannelUnitSummary(visitid, channelUnits, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, largeWoodyPieces):
@@ -85,7 +86,7 @@ def loadJsonFile(jsonFilePath):
         data = json.load(data_file)
         return data
 
-def processMetrics(visitid, visitJsonFile, channelUnitJsonFile, snorkelFishJsonFile, snorkelFishBinnedJsonFile, snorkelFishSteelheadBinnedJsonFile, largeWoodyPieceJsonFile, largeWoodyDebrisJsonFile, woodyDebrisJamJsonFile, jamHasChannelUnitJsonFile, outputDirectory):
+def processMetrics(visitid, outputDirectory, visitJsonFile, channelUnitJsonFile, snorkelFishJsonFile, snorkelFishBinnedJsonFile, snorkelFishSteelheadBinnedJsonFile, largeWoodyPieceJsonFile, largeWoodyDebrisJsonFile, woodyDebrisJamJsonFile, jamHasChannelUnitJsonFile, riparianStructureJsonFile):
     #only load json for files that didn't return 404s
     visit = loadJsonFile(visitJsonFile)
     snorkelFish = loadJsonFile(snorkelFishJsonFile)
@@ -96,9 +97,10 @@ def processMetrics(visitid, visitJsonFile, channelUnitJsonFile, snorkelFishJsonF
     largeWoodyDebris = loadJsonFile(largeWoodyDebrisJsonFile)
     woodyDebrisJams = loadJsonFile(woodyDebrisJamJsonFile)
     jamHasChannelUnits = loadJsonFile(jamHasChannelUnitJsonFile)
+    riparianStructures = loadJsonFile(riparianStructureJsonFile)
 
     #do metric calcs
-    visitMetrics = calculateMetricsForVisit(visitid, visit, channelUnits, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, largeWoodyPieces, largeWoodyDebris, woodyDebrisJams, jamHasChannelUnits)
+    visitMetrics = calculateMetricsForVisit(visitid, visit, channelUnits, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, largeWoodyPieces, largeWoodyDebris, woodyDebrisJams, jamHasChannelUnits, riparianStructures)
     channelUnitMetrics = calculateMetricsForChannelUnitSummary(visitid, channelUnits, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, largeWoodyPieces)
     tier1Metrics = calculateMetricsForTier1Summary(visitid, visit, channelUnits, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, largeWoodyPieces, largeWoodyDebris, woodyDebrisJams, jamHasChannelUnits)
     structureMetrics = calculateMetricsForStructureSummary(visitid, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned)

@@ -43,9 +43,9 @@ def visitFishCountMetricsForSpecies(visitMetrics, snorkelFish, snorkelFishBinned
 
     count = snorkelFishJuvinileCount + snorkelFishBinnedJuvinileCount + snorkelFishSteelheadBinnedJuvinileCount
 
-    logOutput = "Visit {2}: {0}: {1}".format(metricName, count, visitMetrics["VisitID"])
-    print logOutput
-    logging.info(logOutput)
+    ####logOutput = "Visit {2}: {0}: {1}".format(metricName, count, visitMetrics["VisitID"])
+    ####print logOutput
+    ####logging.info(logOutput)
 
     visitMetrics[metricName] = count
 
@@ -89,9 +89,9 @@ def channelUnitFishCountMetricsForSpecies(channelUnitMetrics, snorkelFish, snork
 
         count = snorkelFishJuvinileCount + snorkelFishBinnedJuvinileCount + snorkelFishSteelheadBinnedJuvinileCount
 
-        logOutput = "Visit {3}: ChannelUnit {0} {1}: {2}".format(channelUnitID, metricName, count, c["VisitID"])
-        print logOutput
-        logging.info(logOutput)
+        ###logOutput = "Visit {3}: ChannelUnit {0} {1}: {2}".format(channelUnitID, metricName, count, c["VisitID"])
+        ###print logOutput
+        ###logging.info(logOutput)
 
         c[metricName] = count
 
@@ -136,9 +136,9 @@ def tier1FishCountMetricsForSpecies(tier1Metrics, channelUnits, snorkelFish, sno
 
         count = snorkelFishJuvinileCount + snorkelFishBinnedJuvinileCount + snorkelFishSteelheadBinnedJuvinileCount
 
-        visitLogOutput = "Visit {3}: {0} {1}: {2}".format(tier1, metricName, count, t["VisitID"])
-        print visitLogOutput
-        logging.info(visitLogOutput)
+        ##visitLogOutput = "Visit {3}: {0} {1}: {2}".format(tier1, metricName, count, t["VisitID"])
+        ##print visitLogOutput
+        ##logging.info(visitLogOutput)
 
         t[metricName] = count
 
@@ -182,9 +182,9 @@ def  structureFishCountMetricsForSpecies(structureMetrics, snorkelFish, snorkelF
 
         count = snorkelFishJuvinileCount + snorkelFishBinnedJuvinileCount + snorkelFishSteelheadBinnedJuvinileCount
 
-        visitLogOutput = "Visit {3}: {0} {1}: {2}".format(structure, metricName, count, t["VisitID"])
-        print visitLogOutput
-        logging.info(visitLogOutput)
+        #visitLogOutput = "Visit {3}: {0} {1}: {2}".format(structure, metricName, count, t["VisitID"])
+        #print visitLogOutput
+        #logging.info(visitLogOutput)
 
         t[metricName] = count
 

@@ -110,10 +110,11 @@ def processVisit(apiHelper, block_blob_service, container_name, visit, visit_id,
     largeWoodyDebrisJsonFile = getMeasurementAndWriteToFile(apiHelper, visit_id, "Large Woody Debris")
     woodyDebrisJamJsonFile = getMeasurementAndWriteToFile(apiHelper, visit_id, "Woody Debris Jam")
     jamHasChannelUnitJsonFile = getMeasurementAndWriteToFile(apiHelper, visit_id, "Jam Has Channel Unit")
+    riparianStructureJsonFile = getMeasurementAndWriteToFile(apiHelper, visit_id, "Riparian Structure")
 
-    fileTuple = processMetrics(visit_id, visitJsonFile, channelUnitFile, snorkelFishFile, snorkelFishBinnedFile,
+    fileTuple = processMetrics(visit_id, outputDirectory, visitJsonFile, channelUnitFile, snorkelFishFile, snorkelFishBinnedFile,
                                snorkelFishSteelheadBinnedFile, largeWoodyPieceJsonFile, largeWoodyDebrisJsonFile,
-                               woodyDebrisJamJsonFile, jamHasChannelUnitJsonFile, outputDirectory)
+                               woodyDebrisJamJsonFile, jamHasChannelUnitJsonFile, riparianStructureJsonFile)
 
     infoLog("Writing Metrics for Visit {0} to Azure Blob storage".format(visit_id))
 
