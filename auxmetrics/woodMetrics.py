@@ -172,6 +172,9 @@ def getDebrisVolumeForVisitAndChannelUnits_2013Backwards(channelUnitIDs, isWet, 
     # get volumes for debris
     volumes = [volumeEstimates(p, largeWoodVolumeEstimatesDict) for p in debris]
 
+    if woodyDebrisJams is None:
+        return volumes
+
     # filter jams to wet
     jams = [j for j in woodyDebrisJams["values"]]
     if isWet:

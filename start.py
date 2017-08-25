@@ -102,19 +102,36 @@ def processVisit(apiHelper, block_blob_service, container_name, visit, visit_id,
     with open(visitJsonFile, 'w') as outfile:
         json.dump(visit, outfile, sort_keys=True, indent=4, ensure_ascii=False)
 
-    snorkelFishFile = getMeasurementAndWriteToFile(apiHelper, visit_id, "Snorkel Fish")
-    snorkelFishBinnedFile = getMeasurementAndWriteToFile(apiHelper, visit_id, "Snorkel Fish Count Binned")
-    snorkelFishSteelheadBinnedFile = getMeasurementAndWriteToFile(apiHelper, visit_id, "Snorkel Fish Count Steelhead Binned")
-    channelUnitFile = getMeasurementAndWriteToFile(apiHelper, visit_id, "Channel Unit")
-    largeWoodyPieceJsonFile = getMeasurementAndWriteToFile(apiHelper, visit_id, "Large Woody Piece")
-    largeWoodyDebrisJsonFile = getMeasurementAndWriteToFile(apiHelper, visit_id, "Large Woody Debris")
-    woodyDebrisJamJsonFile = getMeasurementAndWriteToFile(apiHelper, visit_id, "Woody Debris Jam")
-    jamHasChannelUnitJsonFile = getMeasurementAndWriteToFile(apiHelper, visit_id, "Jam Has Channel Unit")
-    riparianStructureJsonFile = getMeasurementAndWriteToFile(apiHelper, visit_id, "Riparian Structure")
+    snorkelFishFile = getMeasurementFile(apiHelper, visit_id, "Snorkel Fish")
+    snorkelFishBinnedFile = getMeasurementFile(apiHelper, visit_id, "Snorkel Fish Count Binned")
+    snorkelFishSteelheadBinnedFile = getMeasurementFile(apiHelper, visit_id, "Snorkel Fish Count Steelhead Binned")
+    channelUnitFile = getMeasurementFile(apiHelper, visit_id, "Channel Unit")
+    largeWoodyPieceJsonFile = getMeasurementFile(apiHelper, visit_id, "Large Woody Piece")
+    largeWoodyDebrisJsonFile = getMeasurementFile(apiHelper, visit_id, "Large Woody Debris")
+    woodyDebrisJamJsonFile = getMeasurementFile(apiHelper, visit_id, "Woody Debris Jam")
+    jamHasChannelUnitJsonFile = getMeasurementFile(apiHelper, visit_id, "Jam Has Channel Unit")
+    riparianStructureJsonFile = getMeasurementFile(apiHelper, visit_id, "Riparian Structure")
+    pebbleJsonFile = getMeasurementFile(apiHelper, visit_id, "Pebble")
+    pebbleCrossSectionJsonFile = getMeasurementFile(apiHelper, visit_id, "Pebble Cross-Section")
+    channelConstraintJsonFile = getMeasurementFile(apiHelper, visit_id, "Channel Constraints")
+    channelConstraintMeasurementJsonFile = getMeasurementFile(apiHelper, visit_id, "Channel Constraint Measurements")
+    bankfullWidthJsonFile = getMeasurementFile(apiHelper, visit_id, "Bankfull Width")
+    driftInvertJsonFile = getMeasurementFile(apiHelper, visit_id, "Drift Invertebrate Sample")
+    driftInvertResultJsonFile = getMeasurementFile(apiHelper, visit_id, "Drift Invertebrate Sample Results")
+    sampleBiomassesJsonFile = getMeasurementFile(apiHelper, visit_id, "Sample Biomasses")
+    undercutBanksJsonFile = getMeasurementFile(apiHelper, visit_id, "Undercut Banks")
+    solarInputMeasurementsJsonFile = getMeasurementFile(apiHelper, visit_id, "Daily Solar Access Meas")
+    dischargeJsonFile = getMeasurementFile(apiHelper, visit_id, "Discharge")
+    waterChemistryJsonFile = getMeasurementFile(apiHelper, visit_id, "Water Chemistry")
+    poolTailFinesJsonFile = getMeasurementFile(apiHelper, visit_id, "Pool Tail Fines")
 
     fileTuple = processMetrics(visit_id, outputDirectory, visitJsonFile, channelUnitFile, snorkelFishFile, snorkelFishBinnedFile,
                                snorkelFishSteelheadBinnedFile, largeWoodyPieceJsonFile, largeWoodyDebrisJsonFile,
-                               woodyDebrisJamJsonFile, jamHasChannelUnitJsonFile, riparianStructureJsonFile)
+                               woodyDebrisJamJsonFile, jamHasChannelUnitJsonFile, riparianStructureJsonFile, pebbleJsonFile,
+                               pebbleCrossSectionJsonFile, channelConstraintJsonFile, channelConstraintMeasurementJsonFile,
+                               bankfullWidthJsonFile, driftInvertJsonFile, driftInvertResultJsonFile, sampleBiomassesJsonFile,
+                               undercutBanksJsonFile, waterChemistryJsonFile, solarInputMeasurementsJsonFile, dischargeJsonFile,
+                               poolTailFinesJsonFile)
 
     infoLog("Writing Metrics for Visit {0} to Azure Blob storage".format(visit_id))
 
@@ -125,7 +142,7 @@ def processVisit(apiHelper, block_blob_service, container_name, visit, visit_id,
 
 
 
-def getMeasurementAndWriteToFile(apiHelper, visit_id, measurement):
+def getMeasurementFile(apiHelper, visit_id, measurement):
     meas = apiHelper.getVisitMeasurements(visit_id, measurement)
     visit_file = '{0}.json'.format(measurement)
     with open(visit_file, 'w') as outfile:

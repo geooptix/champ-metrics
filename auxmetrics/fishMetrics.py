@@ -22,6 +22,10 @@ otherSpecies = [
 
 
 def visitFishCountMetricsForSpecies(visitMetrics, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, speciesNames, metricName):
+    if snorkelFish is None and snorkelFishBinned is None and snorkelFishSteelheadBinned is None:
+        visitMetrics[metricName] = None
+        return
+
     snorkelFishJuvinileCount = 0
     snorkelFishBinnedJuvinileCount = 0
     snorkelFishSteelheadBinnedJuvinileCount = 0
@@ -67,6 +71,9 @@ def visitFishCountMetrics(visitMetrics, snorkelFish, snorkelFishBinned, snorkelF
 def channelUnitFishCountMetricsForSpecies(channelUnitMetrics, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, speciesNames, metricName):
     for c in channelUnitMetrics:
         channelUnitID = c["ChannelUnitID"]
+        if snorkelFish is None and snorkelFishBinned is None and snorkelFishSteelheadBinned is None:
+            c[metricName] = None
+            continue
 
         snorkelFishJuvinileCount = 0
         snorkelFishBinnedJuvinileCount = 0
@@ -113,6 +120,10 @@ def channelUnitFishCountMetrics(channelUnitMetrics, snorkelFish, snorkelFishBinn
 def tier1FishCountMetricsForSpecies(tier1Metrics, channelUnits, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, speciesNames, metricName):
     for t in tier1Metrics:
         tier1 = t["Tier1"]
+        if snorkelFish is None and snorkelFishBinned is None and snorkelFishSteelheadBinned is None:
+            t[metricName] = None
+            continue
+
         channelUnitIDsForTier = [c["value"]["ChannelUnitID"] for c in channelUnits["values"] if c["value"]["Tier1"] == tier1]
         #print json.dumps(channelUnitIDsForTier, indent=4, sort_keys=True)
         snorkelFishJuvinileCount = 0
@@ -160,6 +171,9 @@ def tier1FishCountMetrics(tier1Metrics, channelUnits, snorkelFish, snorkelFishBi
 def  structureFishCountMetricsForSpecies(structureMetrics, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, speciesNames, metricName):
     for t in structureMetrics:
         structure = t["HabitatStructure"]
+        if snorkelFish is None and snorkelFishBinned is None and snorkelFishSteelheadBinned is None:
+            t[metricName] = None
+            continue
         #print json.dumps(channelUnitIDsForTier, indent=4, sort_keys=True)
         snorkelFishJuvinileCount = 0
         snorkelFishBinnedJuvinileCount = 0

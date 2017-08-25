@@ -2,23 +2,36 @@ import json
 
 from auxmetrics.metricUtil import populateDefaultColumns
 
+from auxmetrics.reachMetrics import visitReachMetrics
+from auxmetrics.pebbleMetrics import visitPebbleMetrics
+from auxmetrics.coverMetrics import visitCoverMetrics
 from auxmetrics.fishMetrics import *
 from auxmetrics.woodMetrics import *
-from auxmetrics.coverMetrics import *
 
 
-def calculateMetricsForVisit(visitid, visit, channelUnits, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, largeWoodyPieces, largeWoodyDebris, woodyDebrisJams, jamHasChannelUnits, riparianStructures):
-
+def calculateMetricsForVisit(visitid, visit, channelUnits, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned,
+                             largeWoodyPieces, largeWoodyDebris, woodyDebrisJams, jamHasChannelUnits,
+                             riparianStructures, pebbles, pebbleCrossSections, channelConstraints,
+                             channelConstraintMeasurements, bankfullWidths, driftInverts, driftInvertResults,
+                             sampleBiomasses, undercutBanks, waterChemistry, solarInputMeasurements, discharge,
+                             poolTailFines):
     visitMetrics = dict()
     populateDefaultColumns(visitMetrics, visitid)
 
     visitFishCountMetrics(visitMetrics, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned)
-    visitLWDMetrics(visitMetrics, visit, channelUnits, largeWoodyPieces, largeWoodyDebris, woodyDebrisJams, jamHasChannelUnits)
+    visitLWDMetrics(visitMetrics, visit, channelUnits, largeWoodyPieces, largeWoodyDebris, woodyDebrisJams,
+                    jamHasChannelUnits)
     visitCoverMetrics(visitMetrics, visit, riparianStructures)
+    visitPebbleMetrics(visitMetrics, visit, pebbles, pebbleCrossSections, channelUnits)
+    visitReachMetrics(visitMetrics, visit, channelConstraints, channelConstraintMeasurements, bankfullWidths,
+                      driftInverts, driftInvertResults, sampleBiomasses, undercutBanks, waterChemistry,
+                      solarInputMeasurements, discharge, poolTailFines)
+
     return visitMetrics
 
-def calculateMetricsForChannelUnitSummary(visitid, channelUnits, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, largeWoodyPieces):
 
+def calculateMetricsForChannelUnitSummary(visitid, channelUnits, snorkelFish, snorkelFishBinned,
+                                          snorkelFishSteelheadBinned, largeWoodyPieces):
     channelUnitMetrics = []
     # create the channel unit summary metric rows with the channel unit id
 
@@ -34,8 +47,10 @@ def calculateMetricsForChannelUnitSummary(visitid, channelUnits, snorkelFish, sn
 
     return channelUnitMetrics
 
-def calculateMetricsForTier1Summary(visitid, visit, channelUnits, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, largeWoodyPieces, largeWoodyDebris, woodyDebrisJams, jamHasChannelUnits):
 
+def calculateMetricsForTier1Summary(visitid, visit, channelUnits, snorkelFish, snorkelFishBinned,
+                                    snorkelFishSteelheadBinned, largeWoodyPieces, largeWoodyDebris, woodyDebrisJams,
+                                    jamHasChannelUnits):
     tier1Metrics = []
     # create the tier 1 summary metric rows with the correct tier 1
     if channelUnits is not None:
@@ -49,12 +64,13 @@ def calculateMetricsForTier1Summary(visitid, visit, channelUnits, snorkelFish, s
             tier1Metrics.append(t)
 
         tier1FishCountMetrics(tier1Metrics, channelUnits, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned)
-        tier1LWDMetrics(tier1Metrics, visit, channelUnits, largeWoodyPieces, largeWoodyDebris, woodyDebrisJams, jamHasChannelUnits)
+        tier1LWDMetrics(tier1Metrics, visit, channelUnits, largeWoodyPieces, largeWoodyDebris, woodyDebrisJams,
+                        jamHasChannelUnits)
 
     return tier1Metrics
 
-def calculateMetricsForStructureSummary(visitid, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned):
 
+def calculateMetricsForStructureSummary(visitid, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned):
     structureMetrics = []
     # create the correct structure type metric summaries
     structures = []
@@ -78,6 +94,7 @@ def calculateMetricsForStructureSummary(visitid, snorkelFish, snorkelFishBinned,
 
     return structureMetrics
 
+
 def loadJsonFile(jsonFilePath):
     if jsonFilePath == None:
         return None
@@ -86,26 +103,56 @@ def loadJsonFile(jsonFilePath):
         data = json.load(data_file)
         return data
 
-def processMetrics(visitid, outputDirectory, visitJsonFile, channelUnitJsonFile, snorkelFishJsonFile, snorkelFishBinnedJsonFile, snorkelFishSteelheadBinnedJsonFile, largeWoodyPieceJsonFile, largeWoodyDebrisJsonFile, woodyDebrisJamJsonFile, jamHasChannelUnitJsonFile, riparianStructureJsonFile):
-    #only load json for files that didn't return 404s
+
+def processMetrics(visitid, outputDirectory, visitJsonFile, channelUnitFile, snorkelFishFile, snorkelFishBinnedFile,
+                   snorkelFishSteelheadBinnedFile, largeWoodyPieceJsonFile, largeWoodyDebrisJsonFile,
+                   woodyDebrisJamJsonFile, jamHasChannelUnitJsonFile, riparianStructureJsonFile, pebbleJsonFile,
+                   pebbleCrossSectionJsonFile, channelConstraintJsonFile, channelConstraintMeasurementJsonFile,
+                   bankfullWidthJsonFile, driftInvertJsonFile, driftInvertResultJsonFile, sampleBiomassesJsonFile,
+                   undercutBanksJsonFile, waterChemistryJsonFile, solarInputMeasurementsJsonFile, dischargeJsonFile,
+                   poolTailFinesJsonFile):
+    # only load json for files that didn't return 404s
     visit = loadJsonFile(visitJsonFile)
-    snorkelFish = loadJsonFile(snorkelFishJsonFile)
-    snorkelFishBinned = loadJsonFile(snorkelFishBinnedJsonFile)
-    snorkelFishSteelheadBinned = loadJsonFile(snorkelFishSteelheadBinnedJsonFile)
-    channelUnits = loadJsonFile(channelUnitJsonFile)
+    snorkelFish = loadJsonFile(snorkelFishFile)
+    snorkelFishBinned = loadJsonFile(snorkelFishBinnedFile)
+    snorkelFishSteelheadBinned = loadJsonFile(snorkelFishSteelheadBinnedFile)
+    channelUnits = loadJsonFile(channelUnitFile)
     largeWoodyPieces = loadJsonFile(largeWoodyPieceJsonFile)
     largeWoodyDebris = loadJsonFile(largeWoodyDebrisJsonFile)
     woodyDebrisJams = loadJsonFile(woodyDebrisJamJsonFile)
     jamHasChannelUnits = loadJsonFile(jamHasChannelUnitJsonFile)
     riparianStructures = loadJsonFile(riparianStructureJsonFile)
+    pebbles = loadJsonFile(pebbleJsonFile)
+    pebbleCrossSections = loadJsonFile(pebbleCrossSectionJsonFile)
+    channelConstraints = loadJsonFile(channelConstraintJsonFile)
+    channelConstraintMeasurements = loadJsonFile(channelConstraintMeasurementJsonFile)
+    bankfullWidths = loadJsonFile(bankfullWidthJsonFile)
+    driftInverts = loadJsonFile(driftInvertJsonFile)
+    driftInvertResults = loadJsonFile(driftInvertResultJsonFile)
+    sampleBiomasses = loadJsonFile(sampleBiomassesJsonFile)
+    undercutBanks = loadJsonFile(undercutBanksJsonFile)
+    solarInputMeasurements = loadJsonFile(solarInputMeasurementsJsonFile)
+    discharge = loadJsonFile(dischargeJsonFile)
+    waterChemistry = loadJsonFile(waterChemistryJsonFile)
+    poolTailFines = loadJsonFile(poolTailFinesJsonFile)
 
-    #do metric calcs
-    visitMetrics = calculateMetricsForVisit(visitid, visit, channelUnits, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, largeWoodyPieces, largeWoodyDebris, woodyDebrisJams, jamHasChannelUnits, riparianStructures)
-    channelUnitMetrics = calculateMetricsForChannelUnitSummary(visitid, channelUnits, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, largeWoodyPieces)
-    tier1Metrics = calculateMetricsForTier1Summary(visitid, visit, channelUnits, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned, largeWoodyPieces, largeWoodyDebris, woodyDebrisJams, jamHasChannelUnits)
-    structureMetrics = calculateMetricsForStructureSummary(visitid, snorkelFish, snorkelFishBinned, snorkelFishSteelheadBinned)
+    # do metric calcs
+    visitMetrics = calculateMetricsForVisit(visitid, visit, channelUnits, snorkelFish, snorkelFishBinned,
+                                            snorkelFishSteelheadBinned, largeWoodyPieces, largeWoodyDebris,
+                                            woodyDebrisJams, jamHasChannelUnits, riparianStructures, pebbles,
+                                            pebbleCrossSections, channelConstraints, channelConstraintMeasurements,
+                                            bankfullWidths, driftInverts, driftInvertResults, sampleBiomasses,
+                                            undercutBanks, waterChemistry, solarInputMeasurements, discharge,
+                                            poolTailFines)
+    channelUnitMetrics = calculateMetricsForChannelUnitSummary(visitid, channelUnits, snorkelFish, snorkelFishBinned,
+                                                               snorkelFishSteelheadBinned, largeWoodyPieces)
+    tier1Metrics = calculateMetricsForTier1Summary(visitid, visit, channelUnits, snorkelFish, snorkelFishBinned,
+                                                   snorkelFishSteelheadBinned, largeWoodyPieces, largeWoodyDebris,
+                                                   woodyDebrisJams, jamHasChannelUnits)
+    structureMetrics = calculateMetricsForStructureSummary(visitid, snorkelFish, snorkelFishBinned,
+                                                           snorkelFishSteelheadBinned)
 
-    #write these files
+    # write these files
 
     # print json.dumps(tier1Metrics, indent=4, sort_keys=True)
     tier1_json_file_path = "{0}/visit_{1}_tier1Metrics.json".format(outputDirectory, visitid)
