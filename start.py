@@ -3,9 +3,9 @@ import os
 import argparse
 import json
 import ConfigParser
-import datetime
+#import datetime
 
-from azure.storage.blob import BlockBlobService
+#from azure.storage.blob import BlockBlobService
 
 from auxmetrics.auxMetrics import processMetrics
 from auxmetrics.fishMetrics import *
@@ -54,9 +54,9 @@ def main():
     tokenUrl = apiSection["tokenurl"]
     baseApiUrl = apiSection["baseapiurl"]
 
-    azureSection = ConfigSectionMap("azure")
-    azureAccount = azureSection["account"]
-    azureKey = azureSection["key"]
+    #azureSection = ConfigSectionMap("azure")
+    #azureAccount = azureSection["account"]
+    #azureKey = azureSection["key"]
 
     outputDirectory = 'output'
 
@@ -71,13 +71,13 @@ def main():
     apiHelper = ApiHelper.ApiHelper(baseApiUrl, tokenizer.TOKEN)
 
     # Azure blob setup
-    datestring = datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S')
-    container_name = 'geooptix-container-' + datestring
+    #datestring = datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S')
+    #container_name = 'geooptix-container-' + datestring
 
-    block_blob_service = BlockBlobService(account_name=azureAccount, account_key=azureKey)
+    #block_blob_service = BlockBlobService(account_name=azureAccount, account_key=azureKey)
 
     # The same containers can hold all types of blobs
-    block_blob_service.create_container(container_name)
+    #block_blob_service.create_container(container_name)
 
     for visit_id in args.visitID:
         visit = apiHelper.getVisit(visit_id)
@@ -87,12 +87,13 @@ def main():
             print "Visit was not found for id: {0}".format(visit_id)
             continue
 
-        processVisit(apiHelper, block_blob_service, container_name, visit, visit_id, outputDirectory)
+        #processVisit(apiHelper, block_blob_service, container_name, visit, visit_id, outputDirectory)
+        processVisit(apiHelper, visit, visit_id, outputDirectory)
 
-    block_blob_service.create_blob_from_path(container_name, args.logFile, args.logFile)
+    #block_blob_service.create_blob_from_path(container_name, args.logFile, args.logFile)
 
 
-def processVisit(apiHelper, block_blob_service, container_name, visit, visit_id, outputDirectory):
+def processVisit(apiHelper, visit, visit_id, outputDirectory):
     protocol = visit["protocol"]
     iteration = str(visit["iterationID"] + 2010)
 
