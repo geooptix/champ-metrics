@@ -114,6 +114,9 @@ maxDiameterDictionary = {
 
 
 def getPebbleSubstrateSummary(pebbles, pebbleCrossSections, channelUnits):
+    if channelUnits is None or pebbleCrossSections is None:
+        return []
+
     channelUnitIDs = [c["value"]["ChannelUnitID"] for c in channelUnits["values"] if c["value"]["ChannelUnitID"] is not None and c["value"]["Tier1"] != "Slow/Pool"]
     crossSectionIDsInScope = [c["value"]["CrossSectionID"] for c in pebbleCrossSections["values"] if c["value"]["CrossSectionID"]  is not None and c["value"]["ChannelUnitID"] is not None and c["value"]["ChannelUnitID"] in channelUnitIDs]
 

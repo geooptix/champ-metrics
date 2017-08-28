@@ -121,6 +121,9 @@ def visitLWDVolumeStdDev(visitMetrics, visit, channelUnits, largeWoodyPieces, la
 
 
 def filterChannelUnitsToTier1Type(channelUnits, tier1Type, excludeOffChannel):
+    if channelUnits is None:
+        return []
+
     # filter channel units without channel unit id set
     cus = [c for c in channelUnits["values"] if c["value"]["ChannelUnitID"] is not None]
     # filter out off channels
@@ -143,6 +146,9 @@ def getDebrisVolumeForVisitAndChannelUnits(visit, channelUnitIDs, isWet, largeWo
 
 
 def getDebrisVolumeForVisitAndChannelUnits_2014(channelUnitIDs, isWet, largeWoodyPieces):
+    if largeWoodyPieces is None:
+        return []
+
     # filter large woody piece to one's with cuIDs
     pieces = [p for p in largeWoodyPieces["values"] if p["value"]["ChannelUnitID"] is not None]
     # filter to id's that are passed in
@@ -158,6 +164,9 @@ def getDebrisVolumeForVisitAndChannelUnits_2014(channelUnitIDs, isWet, largeWood
 
 
 def getDebrisVolumeForVisitAndChannelUnits_2013Backwards(channelUnitIDs, isWet, largeWoodyDebris, woodyDebrisJams, jamHasChannelUnits):
+    if largeWoodyDebris is None:
+        return []
+
     # filter large woody debris to one's with cuIDs
     debris = [p for p in largeWoodyDebris["values"] if p["value"]["ChannelUnitID"] is not None]
 
@@ -172,7 +181,7 @@ def getDebrisVolumeForVisitAndChannelUnits_2013Backwards(channelUnitIDs, isWet, 
     # get volumes for debris
     volumes = [volumeEstimates(p, largeWoodVolumeEstimatesDict) for p in debris]
 
-    if woodyDebrisJams is None:
+    if woodyDebrisJams is None or jamHasChannelUnits is None:
         return volumes
 
     # filter jams to wet
