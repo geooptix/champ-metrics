@@ -172,6 +172,9 @@ def sortMaxDiameter(a):
     return a["MaxDiameter"]
 
 def getCobbles(visit, pebbles):
+    if pebbles is None:
+        return []
+    
     if visit["iterationID"] == 1:
         return [p for p in pebbles["values"] if p["value"]["CobbleEmbededPercent"] is not None  and p["value"]["CobblePercentFines"] is not None and p["value"]["Substrate"] is not None and p["value"]["Substrate"] > 64 and p["value"]["Substrate"] <= 250]
 

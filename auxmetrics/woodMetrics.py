@@ -61,11 +61,11 @@ def visitLWDMetrics(visitMetrics, visit, channelUnits, largeWoodyPieces, largeWo
 
     if largeWoodyPieces is not None:
         visitMetrics["LargeWoodyPiecesCountPoolForming"] = [p for p in largeWoodyPieces["values"] if p["value"]["IsPoolForming"] is not None and p["value"]["IsPoolForming"] == "Yes"].__len__()
-        visitMetrics["LargeWoodyPiecesCountIsKey"] = [p for p in largeWoodyPieces["values"] if p["value"]["IsPoolForming"] is not None and p["value"]["IsKeyPiece"] == "Yes"].__len__()
-        visitMetrics["LargeWoodyPiecesCountIsJam"] = [p for p in largeWoodyPieces["values"] if p["value"]["IsPoolForming"] is not None and p["value"]["IsJam"] == "Yes"].__len__()
-        visitMetrics["LargeWoodyPiecesCountRightBank"] = [p for p in largeWoodyPieces["values"] if p["value"]["IsPoolForming"] is not None and p["value"]["PieceLocation"] == "Right"].__len__()
-        visitMetrics["LargeWoodyPiecesCountLeftBank"] = [p for p in largeWoodyPieces["values"] if p["value"]["IsPoolForming"] is not None and p["value"]["PieceLocation"] == "Left"].__len__()
-        visitMetrics["LargeWoodyPiecesCountMidChannel"] = [p for p in largeWoodyPieces["values"] if p["value"]["IsPoolForming"] is not None and p["value"]["PieceLocation"] == "Mid-Channel"].__len__()
+        visitMetrics["LargeWoodyPiecesCountIsKey"] = [p for p in largeWoodyPieces["values"] if p["value"]["IsKeyPiece"] is not None and p["value"]["IsKeyPiece"] == "Yes"].__len__()
+        visitMetrics["LargeWoodyPiecesCountIsJam"] = [p for p in largeWoodyPieces["values"] if p["value"]["IsJam"] is not None and p["value"]["IsJam"] == "Yes"].__len__()
+        visitMetrics["LargeWoodyPiecesCountRightBank"] = [p for p in largeWoodyPieces["values"] if p["value"]["PieceLocation"] is not None and p["value"]["PieceLocation"] == "Right"].__len__()
+        visitMetrics["LargeWoodyPiecesCountLeftBank"] = [p for p in largeWoodyPieces["values"] if p["value"]["PieceLocation"] is not None and p["value"]["PieceLocation"] == "Left"].__len__()
+        visitMetrics["LargeWoodyPiecesCountMidChannel"] = [p for p in largeWoodyPieces["values"] if p["value"]["PieceLocation"] is not None and p["value"]["PieceLocation"] == "Mid-Channel"].__len__()
         visitMetrics["LargeWoodyPiecesCount"] = [p for p in largeWoodyPieces["values"]].__len__()
     else:
         visitMetrics["LargeWoodyPiecesCountPoolForming"] = None

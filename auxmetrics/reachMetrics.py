@@ -194,8 +194,11 @@ def driftBiomassDensity(visitMetrics, driftInverts, driftInvertResults, sampleBi
 
 
 def totalUndercutArea(visitMetrics, visit, undercutBanks):
-    if visit["iterationID"] == 1 or undercutBanks is None:
+    if visit["iterationID"] == 1:
         visitMetrics["TotalUndercutArea"] = None
+        return
+    if undercutBanks is None:
+        visitMetrics["TotalUndercutArea"] = 0
         return
 
     areas = [(b["value"]["EstimatedUndercutArea"] if b["value"]["EstimatedUndercutArea"] is not None else 0) for b in undercutBanks["values"]]
@@ -241,6 +244,7 @@ def siteMeasurementOfAlkalinity(visitMetrics, waterChemistry):
 
 def solarAccessSummerAvg(visitMetrics, visit, solarInputMeasurements):
     if visit["iterationID"] == 1 or solarInputMeasurements is None:
+    #if solarInputMeasurements is None:
         visitMetrics["SolarAccessSummerAvg"] = None
         return
 
